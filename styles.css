@@ -58,7 +58,7 @@ body {
   }
   
   .btn.zero {
-    grid-column: span 2; /* Make the zero button span two columns */
+    grid-column: span 2;
   }
   
   .btn:hover {

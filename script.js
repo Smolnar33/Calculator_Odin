@@ -90,5 +90,3 @@ const operate = (n1, operator, n2) => {
 };
 
 addEventListenerstoButtons();
-
-// console.log(operate(number1, operator, number2));
