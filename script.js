@@ -1,55 +1,66 @@
-let number1 = '';
-let number2 = '';
-let operator = '';
+let currentValue = 0;
+let previusValue = null;
+let operator = null;
+
+const display = document.getElementById('display');
 const buttons = document.querySelectorAll('.btn');
 
 const addEventListenerstoButtons = () => {
   buttons.forEach((button) => {
     button.addEventListener('click', () => {
-      if (
-        ['+', '-', '*', '/'].includes(button.textContent) &&
-        number1
-      ) {
-        operator = button.textContent;
+      const btnValue = button.textContent;
+      if (['+', '-', '*', '/'].includes(btnValue) && operator) {
+        operator = btnValue;
         return updateDisplay(operator);
       }
-      if (button.textContent === '=' && number1 && number2) {
-        // operator = button.textContent;
-        return updateDisplay(
-          operate(parseInt(number1), operator, parseInt(number2))
-        );
+      if (btnValue === 'AC') {
+        currentValue = 0;
+        previusValue = null;
+        operator = null;
+        return updateDisplay(currentValue);
+      } else if (btnValue === '+/-') {
+        currentValue = (parseFloat(currentValue) * -1).toString();
+        updateDisplay(currentValue);
+      } else if (btnValue === '%') {
+        currentValue = (parseFloat(currentValue) / 100).toString();
+        updateDisplay(currentValue);
+      } else if (['+', '-', '*', '/'].includes(btnValue)) {
+        operator = btnValue;
+        previousValue = currentValue;
+        currentValue = 0;
+        updateDisplay(operator);
+      } else if (btnValue === '=') {
+        if (operator && previousValue !== null) {
+          currentValue = operate(
+            previousValue,
+            operator,
+            currentValue
+          ).toString();
+          operator = null;
+          previousValue = null;
+          updateDisplay(currentValue);
+        }
+      } else if (btnValue === '.') {
+        if (!currentValue.includes('.')) {
+          currentValue += '.';
+          updateDisplay(currentValue);
+        }
+      } else {
+        if (currentValue === '0') {
+          currentValue = btnValue;
+        } else {
+          currentValue = parseFloat(
+            currentValue + btnValue
+          ).toString();
+        }
+        updateDisplay(currentValue);
       }
-      if (button.textContent === 'AC') {
-        return clearDisplay();
-      }
-
-      if (!operator) {
-        number1 = number1 + button.textContent;
-        updateDisplay(number1);
-      }
-
-      if (operator && number1) {
-        number2 += button.textContent;
-        updateDisplay(number2);
-      }
-
-      //   if (operator === '=') {
-      //     // console.log('Operate');
-      //     updateDisplay(number1 + number2);
-      //   }
     });
   });
 };
 
 const updateDisplay = (value) => {
-  document.getElementById('display').textContent = value;
-};
-
-const clearDisplay = () => {
-  number1 = '';
-  number2 = '';
-  operator = '';
-  document.getElementById('display').textContent = '0';
+  display.textContent = value;
 };
 
 const add = (a, b) => {
@@ -70,12 +81,14 @@ const divide = (a, b) => {
 };
 
 const operate = (n1, operator, n2) => {
-  //   return `${n1} ${operator} ${n2}`;
-  if (operator === '+') return add(n1, n2);
-  if (operator === '-') return subtract(n1, n2);
-  if (operator === '*') return multiply(n1, n2);
-  if (operator === '/') return divide(n1, n2);
+  if (operator === '+') return add(parseFloat(n1), parseFloat(n2));
+  if (operator === '-')
+    return subtract(parseFloat(n1), parseFloat(n2));
+  if (operator === '*')
+    return multiply(parseFloat(n1), parseFloat(n2));
+  if (operator === '/') return divide(parseFloat(n1), parseFloat(n2));
 };
 
 addEventListenerstoButtons();
+
 // console.log(operate(number1, operator, number2));
